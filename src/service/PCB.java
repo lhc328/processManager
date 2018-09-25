@@ -5,7 +5,8 @@
  */
 package service;
 
-import processmanager.ProcessManager;
+import function.PCBcontrol;
+
 
 /**
  *
@@ -19,7 +20,7 @@ public class PCB {
     public int starttime;
     
     public PCB(){
-        this.name = ++ProcessManager.minx;
+        this.name = ++PCBcontrol.minx;
         this.status = 0;
         this.priority = (int)(Math.random()*3);
         this.time = (int)(Math.random()*9+1);
