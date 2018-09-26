@@ -19,6 +19,7 @@ public class PCBcontrol {
     public static int maxPcb = 10;              //最大进程数
     public static int minx = 0;                 //进程数id
     public static int time = 0;                 //运行时间
+    public static ArrayList<Integer> timelist = new ArrayList();
     public static ArrayList<PCB> relist = new ArrayList();      //就绪队列
     public static ArrayList<PCB> savelist = new ArrayList();    //进程保存队列
     public static ArrayList<PCB> waitlist = new ArrayList();    //到达队列
@@ -94,6 +95,7 @@ public class PCBcontrol {
                 time++;
                 loglist.add(null);
             }
+            timelist.add(time);
             readyPCB();
         }
     }
@@ -130,6 +132,7 @@ public class PCBcontrol {
                 time++;
                 loglist.add(null);
             }
+            timelist.add(time);
             readyPCB();
             Collections.sort(relist, comparator);
         }
@@ -159,6 +162,7 @@ public class PCBcontrol {
                 time++;
                 loglist.add(null);
             }
+            timelist.add(time);
             if (readyPCB()) {                                 //有到达新进程，就要重新排序
                 Collections.sort(relist, comparator);
             }
@@ -196,6 +200,7 @@ public class PCBcontrol {
                 time++;
                 loglist.add(null);
             }
+            timelist.add(time);
             readyPCB();
             Collections.sort(relist, comparator);
         }
