@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -49,7 +50,10 @@ public class ProcessManager extends Application {
         
         
         menuBar.getMenus().addAll(menuEdit, menuHelp);
-        ((VBox)scene.getRoot()).getChildren().addAll(menuBar);
+        
+        LogTableView table = new LogTableView();
+        TableView view = table.addTableView();
+        ((VBox)scene.getRoot()).getChildren().addAll(menuBar, view);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
