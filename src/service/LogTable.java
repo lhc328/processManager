@@ -13,15 +13,33 @@ import function.PCBcontrol;
  */
 public class LogTable {
     
-    private int runtime;
-    private int processname;
-    private String status;
-    private int priority;
-    private int stime;
-    private int etime;
+    private int runtime;            //运行时间点
+    private int processname;        //进程名字
+    private String status;          //进程状态
+    private int priority;           //优先数
+    private int stime;              //到达时间
+    private int etime;              //剩余时间
     
     public LogTable(PCB logPcb, int i){
-        runtime = PCBcontrol.timelist.get(i);
+        this.runtime = PCBcontrol.timelist.get(i);
+        this.processname = PCBcontrol.loglist.get(i).name;
+        this.priority = PCBcontrol.loglist.get(i).priority;
+        this.stime = PCBcontrol.loglist.get(i).starttime;
+        this.etime = PCBcontrol.loglist.get(i).time;
+        if(PCBcontrol.loglist.get(i).status == 1){
+            this.status = "结束";
+        }else{
+            this.status = "运行/就绪";
+        }   
+    }
+    
+    public LogTable(int runtime, int processname, String status, int priority, int stime, int etime){
+        this.runtime = runtime;
+        this.processname = processname;
+        this.priority = priority;
+        this.stime = stime;
+        this.etime = etime;
+        this.status = status;
     }
 
     /**

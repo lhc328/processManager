@@ -5,9 +5,12 @@
  */
 package processmanager;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import service.LogTable;
 
 /**
  *
@@ -18,19 +21,35 @@ public class LogTableView {
     public TableView addTableView() {
         TableView table = new  TableView();
         
+        ObservableList<LogTable> data = FXCollections.observableArrayList(
+                new LogTable(0,1,"结束",3,0,1)
+        );
+        
         TableColumn timeCol = new TableColumn("run-time");
         timeCol.setMinWidth(50);
         timeCol.setCellValueFactory(new PropertyValueFactory<>("runtime"));
+        
         TableColumn nameCol = new TableColumn("process-name");
         nameCol.setMinWidth(100);
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("processname"));
+        
         TableColumn statusCol = new TableColumn("status");
-        statusCol.setMinWidth(60);
+        statusCol.setMinWidth(80);
+        statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
+        
         TableColumn prCol = new TableColumn("priority");
-        prCol.setMinWidth(50);
+        prCol.setMinWidth(55);
+        prCol.setCellValueFactory(new PropertyValueFactory<>("priority"));
+        
         TableColumn startCol = new TableColumn("s-time");
-        startCol.setMinWidth(80);
+        startCol.setMinWidth(90);
+        startCol.setCellValueFactory(new PropertyValueFactory<>("stime"));
+        
         TableColumn endCol = new TableColumn("r-time");
-        endCol.setMinWidth(80);
+        endCol.setMinWidth(90);
+        endCol.setCellValueFactory(new PropertyValueFactory<>("etime"));
+        
+        table.setItems(data);
         table.getColumns().addAll(timeCol, nameCol, statusCol, prCol, startCol, endCol);
         
         return table;
