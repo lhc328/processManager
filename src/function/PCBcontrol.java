@@ -32,6 +32,11 @@ public class PCBcontrol {
         time = 0;
         relist.removeAll(relist);
         loglist.removeAll(loglist);
+        for (int i = 0; i < 5; i++) {
+            //timelist.add(i);
+            //loglist.add(new PCB());
+           initPCB();
+        }
     }
 
     //创建PCB
@@ -41,7 +46,7 @@ public class PCBcontrol {
         } else {
             PCB newPcb = new PCB();
             waitlist.add(newPcb);
-            savelist.add(newPcb);
+            savelist.add(new PCB(newPcb));
             maxPcb--;
             return true;
         }
@@ -51,10 +56,10 @@ public class PCBcontrol {
     public static void waitsort() {
         Comparator<PCB> comparator = new Comparator<PCB>() {
             public int compare(PCB p1, PCB p2) {
-                if (p1.starttime != p2.starttime) {
-                    return p2.starttime - p1.starttime;
+                if (p1.getStarttime() != p2.getStarttime()) {
+                    return p1.getStarttime() - p2.getStarttime();
                 } else {
-                    return p1.name - p2.name;
+                    return p1.getName() - p2.getName();
                 }
             }
         };
@@ -64,12 +69,18 @@ public class PCBcontrol {
     //取出到达队列第一个
     public static boolean readyPCB() {
         boolean flag = false;
-        PCB pcb = waitlist.get(0);
-        while (pcb.starttime <= time) {
-            relist.add(pcb);
-            waitlist.remove(pcb);
-            pcb = waitlist.get(0);
-            flag = true;
+        if (!waitlist.isEmpty()) {
+            PCB pcb = waitlist.get(0);
+            while (pcb.getStarttime() <= time) {
+                relist.add(pcb);
+                waitlist.remove(0);
+                if (!waitlist.isEmpty()){
+                    pcb = waitlist.get(0);
+                }else{
+                    break;
+                }
+                flag = true;
+            }
         }
         return flag;
     }
@@ -77,25 +88,29 @@ public class PCBcontrol {
     //时间片轮转 
     public static void RR() {
         int slicetime = 1;                          //时间片
+        waitsort();
+        readyPCB();
+        //System.out.print("111111111111111111111111111111111111111111111111111111111112"+waitlist.get(0).getTime());
         PCB runPcb = null;
         while (!relist.isEmpty() || !waitlist.isEmpty()) {
+            timelist.add(time);
             if (!relist.isEmpty()) {                    //就绪队列不为空，cpu继续工作
                 runPcb = relist.remove(0);              //取第一个进程
-                if (runPcb.time <= slicetime) {            //第一个进程剩余时间少于等于时间片
-                    time += runPcb.time;
-                    runPcb.time = 0;
-                    runPcb.status = 1;
+                if (runPcb.getTime() <= slicetime) {            //第一个进程剩余时间少于等于时间片
+                    time += runPcb.getTime();
+                    runPcb.setTime(0);
+                    runPcb.setStatus(1);
                 } else {
                     time += slicetime;
-                    runPcb.time -= slicetime;
-                    relist.add(runPcb);
+                    runPcb.setTime(runPcb.getTime() - slicetime);
+                    relist.add(new PCB(runPcb));
                 }
-                loglist.add(runPcb);                    //记录每一步的执行
+                loglist.add(new PCB(runPcb));                    //记录每一步的执行
             } else {                                     //就绪队列为空，到达队列还有进程，进行空操作
                 time++;
-                loglist.add(null);
+                loglist.add(new PCB(0,3,0,0,0));
             }
-            timelist.add(time);
+            
             readyPCB();
         }
     }
@@ -104,10 +119,10 @@ public class PCBcontrol {
     public static void PF() {
         Comparator<PCB> comparator = new Comparator<PCB>() {
             public int compare(PCB p1, PCB p2) {
-                if (p1.priority != p2.priority) {
-                    return p1.priority - p2.priority;
+                if (p1.getPriority() != p2.getPriority()) {
+                    return p1.getPriority() - p2.getPriority();
                 } else {
-                    return p1.name - p2.name;
+                    return p1.getName() - p2.getName();
                 }
             }
         };
@@ -117,14 +132,14 @@ public class PCBcontrol {
         while (!relist.isEmpty() || !waitlist.isEmpty()) {
             if (!relist.isEmpty()) {
                 runPcb = relist.remove(0);
-                if (runPcb.time <= slicetime) {            //第一个进程剩余时间少于等于时间片
-                    time += runPcb.time;
-                    runPcb.time = 0;
-                    runPcb.status = 1;
+                if (runPcb.getTime() <= slicetime) {            //第一个进程剩余时间少于等于时间片
+                    time += runPcb.getTime();
+                    runPcb.setTime(0);
+                    runPcb.setStatus(1);
                 } else {
                     time += slicetime;
-                    runPcb.time -= slicetime;
-                    runPcb.priority--;
+                    runPcb.setTime(runPcb.getTime() - slicetime);
+                    runPcb.setPriority(runPcb.getPriority() - 1);
                     relist.add(runPcb);
                 }
                 loglist.add(runPcb);
@@ -142,10 +157,10 @@ public class PCBcontrol {
     public static void SPN() {
         Comparator<PCB> comparator = new Comparator<PCB>() {
             public int compare(PCB p1, PCB p2) {
-                if (p1.time != p2.time) {
-                    return p2.time - p1.time;
+                if (p1.getTime() != p2.getTime()) {
+                    return p2.getTime() - p1.getTime();
                 } else {
-                    return p1.name - p2.name;
+                    return p1.getName() - p2.getName();
                 }
             }
         };
@@ -154,9 +169,9 @@ public class PCBcontrol {
         while (!relist.isEmpty() || !waitlist.isEmpty()) {
             if (!relist.isEmpty()) {
                 runPcb = relist.remove(0);
-                time += runPcb.time;
-                runPcb.time = 0;
-                runPcb.status = 1;
+                time += runPcb.getTime();
+                runPcb.setTime(0);
+                runPcb.setStatus(1);
                 loglist.add(runPcb);
             } else {
                 time++;
@@ -173,10 +188,10 @@ public class PCBcontrol {
     public static void SRT() {
         Comparator<PCB> comparator = new Comparator<PCB>() {
             public int compare(PCB p1, PCB p2) {
-                if (p1.time != p2.time) {
-                    return p2.time - p1.time;
+                if (p1.getTime() != p2.getTime()) {
+                    return p2.getTime() - p1.getTime();
                 } else {
-                    return p1.name - p2.name;
+                    return p1.getName() - p2.getName();
                 }
             }
         };
@@ -186,13 +201,13 @@ public class PCBcontrol {
         while (!relist.isEmpty() || !waitlist.isEmpty()) {
             if (!relist.isEmpty()) {
                 runPcb = relist.remove(0);
-                if (runPcb.time <= slicetime) {
-                    time += runPcb.time;
-                    runPcb.time = 0;
-                    runPcb.status = 1;
+                if (runPcb.getTime() <= slicetime) {
+                    time += runPcb.getTime();
+                    runPcb.setTime(0);
+                    runPcb.setStatus(1);
                 } else {
                     time += slicetime;
-                    runPcb.time -= slicetime;
+                    runPcb.setTime(runPcb.getTime() - slicetime);
                     relist.add(runPcb);
                 }
                 loglist.add(runPcb);

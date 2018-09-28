@@ -21,10 +21,6 @@ public class LogTableView {
     public TableView addTableView() {
         TableView table = new  TableView();
         
-        ObservableList<LogTable> data = FXCollections.observableArrayList(
-                new LogTable(0,1,"结束",3,0,1)
-        );
-        
         TableColumn timeCol = new TableColumn("run-time");
         timeCol.setMinWidth(50);
         timeCol.setCellValueFactory(new PropertyValueFactory<>("runtime"));
@@ -46,10 +42,10 @@ public class LogTableView {
         startCol.setCellValueFactory(new PropertyValueFactory<>("stime"));
         
         TableColumn endCol = new TableColumn("r-time");
-        endCol.setMinWidth(90);
+        endCol.setMinWidth(80);
         endCol.setCellValueFactory(new PropertyValueFactory<>("etime"));
         
-        table.setItems(data);
+        
         table.getColumns().addAll(timeCol, nameCol, statusCol, prCol, startCol, endCol);
         
         return table;
